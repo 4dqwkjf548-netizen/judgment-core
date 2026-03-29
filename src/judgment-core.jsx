@@ -313,7 +313,7 @@ headers:{
 body: JSON.stringify({
 model:"claude-sonnet-4-20250514",
 max_tokens:900,
-messages:[{role:"user", content:`日本語で法廷バトルゲーム用の刑事事件シナリオを1つ生成してください。 以下のJSON形式のみで返答。コードブロック不要。説明文不要。 {"title":"事件名15字以内","defendant":"氏名（年齢、職業）","crime":"容疑50字以内","prosecution_claim":"検察の主張80字以内","evidence_open":["開示証拠1","開示証拠2","開示証拠3"],"evidence_hidden":["未開示証拠1","未開示証拠2"],"witnesses":["証人名・関係性","証人名・関係性"],"opening_statement":"御堂検察官の冒頭陳述100字以内"}`}]
+messages:[{role:"user", content:`日本語で法廷バトルゲーム用の刑事事件シナリオを1つ生成してください。 以下のJSON形式のみで返答。コードブロック不要。説明文不要。 {"title":"事件名15字以内","defendant":"氏名（年齢、職業）","crime":"容疑50字以内","prosecution_claim":"検察の主張80字以内","evidence_open":["開示証拠1","開示証拠2","開示証拠3"],"evidence_details":["証拠1の詳細説明60字以内","証拠2の詳細説明60字以内","証拠3の詳細説明60字以内"],"evidence_hidden":["未開示証拠1","未開示証拠2"],"witnesses":["証人名・関係性","証人名・関係性"],"witness_details":["証人1の詳細説明60字以内","証人2の詳細説明60字以内"],"opening_statement":"御堂検察官の冒頭陳述100字以内"}`}]
 }),
 });
 const data = await res.json();
@@ -326,8 +326,10 @@ if (fence) { try { parsed = JSON.parse(fence[1].trim()); } catch(e){} }
 if (!parsed) { const m = raw.match(/{[\s\S]*}/); if(m){ try{ parsed = JSON.parse(m[0]); }catch(e){} } }
 if (!parsed) throw new Error("JSON失敗");
 parsed.evidence_open = Array.isArray(parsed.evidence_open) ? parsed.evidence_open : ["証拠書類一式"];
+parsed.evidence_details = Array.isArray(parsed.evidence_details) ? parsed.evidence_details : [];
 parsed.evidence_hidden = Array.isArray(parsed.evidence_hidden) ? parsed.evidence_hidden : [];
 parsed.witnesses = Array.isArray(parsed.witnesses) ? parsed.witnesses : [];
+parsed.witness_details = Array.isArray(parsed.witness_details) ? parsed.witness_details : [];
 parsed.opening_statement = parsed.opening_statement || "被告人の有罪を立証します。";
 setScenarioData(parsed);
 startGame(parsed);
